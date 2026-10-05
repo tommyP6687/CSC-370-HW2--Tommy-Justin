@@ -1,6 +1,8 @@
 # CSC 370 - Machine Reasoning
 ## Homework 2
-An implementation of symbolic regression using genetic programming (GP). Specifically, we will use symbolic regression to determine the mystery functions $f$ applied to each point in the datasets provided (`dataset1.csv`, `dataset2.csv`, `dataset3.csv`).
+An implementation of symbolic regression using genetic programming (GP). 
+
+Specifically, we will use symbolic regression to determine the mystery functions $f$ applied to each point in the datasets provided (`dataset1.csv`, `dataset2.csv`, `dataset3.csv`).
 
 Contributors: Tommy Pham and Justin Caudle
 
