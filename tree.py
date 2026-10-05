@@ -3,9 +3,15 @@
 Contains functions to represent and manipulate individuals/trees in our population
 """
 
-class Tree:
-    # tree: represented as a ... (immutable)
-    
+# Definition for a binary tree node
+class TreeNode(object):
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+# Expression tree class
+class Tree:    
     def __init__(self, tree):
         """Initialize initial tree state
 
@@ -16,6 +22,9 @@ class Tree:
     def mutate(self):
         """Modifies an operation in the tree?
         """
+        # ...
+        # copy = self.clone()
+        # return copy
     
     def crossover(self):
         """Joins a part of one tree with the other part of another tree?
