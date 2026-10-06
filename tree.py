@@ -48,9 +48,18 @@ class Tree:
     def mutate(self):
         """Modifies an operation in the tree?
         """
-        # ...
-        # copy = self.clone()
-        # return copy
+        # 0) Create a copy of the old tree to get a new tree --> need copy method
+        
+        # 1) Collect the nodes in the copy into a list --> need recursive helper to populate list
+        
+        # 2) Randomly select one node --> use random.choice() as we have a list of nodes
+        
+        # 3) Use 'is_leaf' function to determine node's category (leaf or operator)
+        
+        # 4a) If leaf, randomly select constant or a variable from a range --> use random.randint() (ints) or random.uniform() (reals) for constants, and random.choice() for variables 
+        # 4b) If operator, randomly select operator --> use random.choice() for operators
+        
+        # 5) Apply the changes to the new tree and return
     
     def crossover(self):
         """Joins a part of one tree with the other part of another tree?
