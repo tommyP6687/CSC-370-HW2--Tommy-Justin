@@ -3,7 +3,7 @@
 from tree import TreeNode, Tree
 
 def test_root():
-    """Builds (x^2 + 5)"""
+    """Builds (x^2 + 3)"""
     return TreeNode('+', # root
                     TreeNode('*', TreeNode('x'), TreeNode('x')), # left child
                     TreeNode(3)) # right child
@@ -17,3 +17,9 @@ print(root.right.is_leaf())
 print(root.is_leaf())
 print(root.left.is_leaf())
 print(test_root())
+
+# test tree compute function
+tree = Tree(root)
+print(tree.compute_tree(tree.root, 2)) # should = 2^2 + 3 = 7
+print(tree.compute_tree(tree.root, 3)) # should = 3^2 + 3 = 12
+print(tree.compute_tree(tree.root, -5)) # should = (-5)^2 + 3 = 28

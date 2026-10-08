@@ -4,9 +4,18 @@ Contains functions to represent and manipulate individuals/trees in our populati
 """
 import copy # tree cloning
 import random # for random selections
+import operator 
 
 # Operators 
-OPERATORS = ['+', '-', '*', '/']
+OPERATORS = {
+    "+": operator.add,
+    "-": operator.sub,
+    "*": operator.mul,
+    "/": operator.truediv
+}
+
+# Variables 
+VARIABLES = ['x', 'x1', 'x2', 'x3']
 
 # Definition for a tree node
 class TreeNode:
@@ -76,12 +85,14 @@ class Tree:
             while new == old:
                 # case 1: replace with variable (e.g., 'x') if probability < 0.5
                 if random.random() < 0.5:
-                    new = random.choice(clone.variables)
+                    new = random.choice(clone.variables) # break if only have 'x'
                 # case 2 & 3: replace with value (constant = int/real) otherwise
                 elif clone.int_constants:
                     new = random.randint(low, high)
                 else: 
                     new = random.uniform(low, high)
+                    
+            # instead of repeatedly trying to create a unique tree, just compare to set at the end and quit (think)
             
             # replace
             target.value = new
@@ -99,6 +110,12 @@ class Tree:
         
     
     def collect_nodes(self, root, nodes):
+        """Pre-order traversal to collect nodes for random node selection
+
+        Args:
+            root (TreeNode): root node of expression tree
+            nodes (List): list to store all nodes in the expression tree
+        """
         # OOB: just return
         if root is None:
             return 
@@ -112,6 +129,12 @@ class Tree:
         """
         
     # Fitness function and relevant helpers
+    def fitness(self): # mine
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
     
     # Traversal functions
     def inorder(self):
@@ -120,6 +143,44 @@ class Tree:
         if self.value is None:
             return 
         
+    def compute_tree(self, root, x=None, x1=None, x2=None, x3=None): # mine
+        """Post-order traversal for expression tree computation
+
+        Args:
+            root (TreeNode): root node of expression tree
+            x (float, optional): variable (dataset 1). Defaults to None.
+            x1 (float, optional): variable (dataset 2). Defaults to None.
+            x2 (float, optional): variable (dataset 2). Defaults to None.
+            x3 (float, optional): variable (dataset 2). Defaults to None.
+        """
+        # base case 1: beyond leaf node
+        if root is None:
+            return 
+        
+        # base case 2: leaf node (constant or variable)
+        if root.is_leaf():
+            var = root.value
+            # if variable, substitute & return 
+            sub = {'x': x, 'x1': x1, 'x2': x2, 'x3': x3}
+            if var in sub:
+                return sub[var]            
+            # otherwise, if constant, just return
+            return var
+            
+        # left subtree 
+        left = self.compute_tree(root.left, x=x, x1=x1, x2=x2, x3=x3)
+        
+        # right subtree
+        right = self.compute_tree(root.right, x=x, x1=x1, x2=x2, x3=x3)
+        
+        # compute left & right subtrees using root operator
+        op = root.value
+        
+        # prevent undefined 
+        if op == '/' and right == 0:
+            return 1
+        
+        return OPERATORS[op](left, right)
                 
         
 # you have x, y, y_tree
