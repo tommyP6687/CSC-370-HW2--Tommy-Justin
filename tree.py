@@ -4,9 +4,18 @@ Contains functions to represent and manipulate individuals/trees in our populati
 """
 import copy # tree cloning
 import random # for random selections
+import operator 
 
 # Operators 
-OPERATORS = ['+', '-', '*', '/']
+OPERATORS = {
+    "+": operator.add,
+    "-": operator.sub,
+    "*": operator.mul,
+    "/": operator.truediv
+}
+
+# Variables 
+VARIABLES = ['x', 'x1', 'x2', 'x3']
 
 # Definition for a tree node
 class TreeNode:
@@ -76,12 +85,14 @@ class Tree:
             while new == old:
                 # case 1: replace with variable (e.g., 'x') if probability < 0.5
                 if random.random() < 0.5:
-                    new = random.choice(clone.variables)
+                    new = random.choice(clone.variables) # break if only have 'x'
                 # case 2 & 3: replace with value (constant = int/real) otherwise
                 elif clone.int_constants:
                     new = random.randint(low, high)
                 else: 
                     new = random.uniform(low, high)
+                    
+            # instead of repeatedly trying to create a unique tree, just compare to set at the end and quit (think)
             
             # replace
             target.value = new
@@ -99,6 +110,12 @@ class Tree:
         
     
     def collect_nodes(self, root, nodes):
+        """Pre-order traversal to collect nodes for random node selection
+
+        Args:
+            root (TreeNode): root node of expression tree
+            nodes (List): list to store all nodes in the expression tree
+        """
         # OOB: just return
         if root is None:
             return 
@@ -112,6 +129,52 @@ class Tree:
         """
         
     # Fitness function and relevant helpers
+    def fitness(self, root, x_list, y_list, population, seen, x1_list=None, x2_list=None, x3_list=None): # mine
+        """Determines if a randomly generated function is 'acceptable' for a given dataset
+        
+        1) Calculate y' = f(x) for each data point in the dataset
+        2) Calculate yΔ (difference between y' and y in data set, then squared) for each point
+        3) Calculate mean squared error via Σ(yΔ)/# of data points
+        4) Keep/Discard function/expression tree based on whether its MSE falls within the acceptable range
+        
+        Args:
+            root (TreeNode): root node of expression tree
+            x_list (List): contains all x-values in dataset
+            y_list (List): contains all y-values in dataset
+            population (Array List): contains current population 
+            seen (Set): contains all encountered specimen in the population
+            
+
+        Returns:
+            bool: True if acceptable. False otherwise
+        """
+        mse = 0
+        
+        # 0) Iterate through each x and y value in the dataset
+        for index in range(len(x_list)):
+            # 1) Traverse the tree, substitute variables with 'x' values, and evaluate y'
+            y_prime = self.compute_tree(root, x_list[index])
+            
+            # 2) Compute yΔ
+            y_delta  = (y_list[index] - y_prime) ** 2
+            
+            # 3) Add to total MSE
+            mse += y_delta
+        
+        # divide by total # of points to get real MSE
+        mse /= len(x_list)
+        
+        # 4) Determine if our mse value falls within the acceptable range (off by 10 is max? arbitrary)
+        if mse <= 10: 
+            # if acceptable, check set (if DNE yet, add to population list and set)
+            if root not in seen:
+                population.append(self)
+                seen.add(root)
+                return True
+            # otherwise, already in set, don't add to population (already exists)
+        
+        # return False if not acceptable MSE or already exists
+        return False
     
     # Traversal functions
     def inorder(self):
@@ -120,6 +183,44 @@ class Tree:
         if self.value is None:
             return 
         
+    def compute_tree(self, root, x=None, x1=None, x2=None, x3=None): # mine
+        """Post-order traversal for expression tree computation
+
+        Args:
+            root (TreeNode): root node of expression tree
+            x (float, optional): variable (dataset 1). Defaults to None.
+            x1 (float, optional): variable (dataset 2). Defaults to None.
+            x2 (float, optional): variable (dataset 2). Defaults to None.
+            x3 (float, optional): variable (dataset 2). Defaults to None.
+        """
+        # base case 1: beyond leaf node
+        if root is None:
+            return 
+        
+        # base case 2: leaf node (constant or variable)
+        if root.is_leaf():
+            var = root.value
+            # if variable, substitute & return 
+            sub = {'x': x, 'x1': x1, 'x2': x2, 'x3': x3}
+            if var in sub:
+                return sub[var]            
+            # otherwise, if constant, just return
+            return var
+            
+        # left subtree 
+        left = self.compute_tree(root.left, x=x, x1=x1, x2=x2, x3=x3)
+        
+        # right subtree
+        right = self.compute_tree(root.right, x=x, x1=x1, x2=x2, x3=x3)
+        
+        # compute left & right subtrees using root operator
+        op = root.value
+        
+        # prevent undefined 
+        if op == '/' and right == 0:
+            return 1
+        
+        return OPERATORS[op](left, right)
                 
         
 # you have x, y, y_tree
