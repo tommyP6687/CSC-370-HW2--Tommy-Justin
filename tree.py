@@ -129,12 +129,52 @@ class Tree:
         """
         
     # Fitness function and relevant helpers
-    def fitness(self): # mine
-        """_summary_
+    def fitness(self, root, x_list, y_list, population, seen, x1_list=None, x2_list=None, x3_list=None): # mine
+        """Determines if a randomly generated function is 'acceptable' for a given dataset
+        
+        1) Calculate y' = f(x) for each data point in the dataset
+        2) Calculate yΔ (difference between y' and y in data set, then squared) for each point
+        3) Calculate mean squared error via Σ(yΔ)/# of data points
+        4) Keep/Discard function/expression tree based on whether its MSE falls within the acceptable range
+        
+        Args:
+            root (TreeNode): root node of expression tree
+            x_list (List): contains all x-values in dataset
+            y_list (List): contains all y-values in dataset
+            population (Array List): contains current population 
+            seen (Set): contains all encountered specimen in the population
+            
 
         Returns:
-            _type_: _description_
+            bool: True if acceptable. False otherwise
         """
+        mse = 0
+        
+        # 0) Iterate through each x and y value in the dataset
+        for index in range(len(x_list)):
+            # 1) Traverse the tree, substitute variables with 'x' values, and evaluate y'
+            y_prime = self.compute_tree(root, x_list[index])
+            
+            # 2) Compute yΔ
+            y_delta  = (y_list[index] - y_prime) ** 2
+            
+            # 3) Add to total MSE
+            mse += y_delta
+        
+        # divide by total # of points to get real MSE
+        mse /= len(x_list)
+        
+        # 4) Determine if our mse value falls within the acceptable range (off by 10 is max? arbitrary)
+        if mse <= 10: 
+            # if acceptable, check set (if DNE yet, add to population list and set)
+            if root not in seen:
+                population.append(self)
+                seen.add(root)
+                return True
+            # otherwise, already in set, don't add to population (already exists)
+        
+        # return False if not acceptable MSE or already exists
+        return False
     
     # Traversal functions
     def inorder(self):
