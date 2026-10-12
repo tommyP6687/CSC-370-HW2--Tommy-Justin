@@ -124,9 +124,33 @@ class Tree:
         self.collect_nodes(root.left, nodes)
         self.collect_nodes(root.right, nodes)
     
-    def crossover(self):
-        """Joins a part of one tree with the other part of another tree?
+    def crossover(self, other):
+        """swaps a part of one tree with the other part of another tree?
         """
+        #copy both trees
+        clone1 = copy.deepcopy(self)
+        clone2 = copy.deepcopy(other)
+
+        # collect nodes 
+        nodes1 = []
+        nodes2 = []
+
+        clone1.collect_nodes(clone1.root, nodes1)
+        clone2.collect_nodes(clone2.root, nodes2)
+
+        #random select a node from each tree
+        target1 = random.choice(nodes1)
+        target2 = random.choice(nodes2)
+
+        #swap the nodes selected values and their children
+        target1.value, target2.value = target2.value, target1.value
+        target1.left, target2.left = target2.left, target1.left
+        target1.right, target2.right = target2.right, target1.right
+
+        #new trees are returned
+        return clone1, clone2 
+
+
         
     # Fitness function and relevant helpers
     def fitness(self, root, x_list, y_list, population, seen, x1_list=None, x2_list=None, x3_list=None): # mine
@@ -177,11 +201,25 @@ class Tree:
         return False
     
     # Traversal functions
-    def inorder(self):
+    def inorder(self, root=None):
         """In-order traversal for string expression representation
         """
-        if self.value is None:
-            return 
+
+        if root is None:
+            root = self.root
+
+        #Base case- leaf node
+        if root.is_leaf():
+            return str(root.value)
+
+        # traverse the left subtree
+        left = self.inorder(root.left)
+
+        #traverse the right subtree
+        right = self.inorder(root.right)
+
+        # combine left, root, and right
+        return f"({left} {root.value} {right})"
         
     def compute_tree(self, root, x=None, x1=None, x2=None, x3=None): # mine
         """Post-order traversal for expression tree computation
