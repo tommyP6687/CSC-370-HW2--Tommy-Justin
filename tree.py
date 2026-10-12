@@ -221,8 +221,48 @@ class Tree:
             return 1
         
         return OPERATORS[op](left, right)
-                
+    
+    @classmethod
+    def random_tree(cls, max_depth=5, variables=('x',), int_constants=True, const_range=(-10, 10)):
+        """Generate random expression tree
+        """
+        root = cls.random_node(max_depth, variables, int_constants, const_range)
+        return cls(root, variables, int_constants, const_range)
+    
+    @staticmethod
+    def random_node(depth, variables, int_constants, const_range):
+        """Recursively build a random substree of at most 'depth' levels
+        """
+        low, high = const_range
+        # base case: depth == 0 or probability < 0.2
+        if depth == 0 or random.random() < 0.2:
+            # random leaf (random variable or constant)
+            leaf = None
+            # case 1: variable (e.g., 'x') if probability < 0.5
+            if random.random() < 0.5:
+                leaf = random.choice(variables) # break if only have 'x'
+            # case 2 & 3: value (constant = int/real) otherwise
+            elif int_constants:
+                leaf = random.randint(low, high)
+            else: 
+                leaf = random.uniform(low, high)
+            
+            return TreeNode(leaf)
+            
+        # recursive case: depth > 0
         
+        # terminal node (random select operator, excluding old operator)
+        choices = [op for op in OPERATORS]
+        
+        # choose
+        op = random.choice(choices)
+        
+        # recursively traverse with two child nodes
+        left = Tree.random_node(depth-1, variables, int_constants, const_range)
+        right = Tree.random_node(depth-1, variables, int_constants, const_range)
+        
+        return TreeNode(op, left, right)
+
 # you have x, y, y_tree
 
 # .eval --> turns string expression into an expression tree (roundabout way of doing things)
