@@ -1,0 +1,9 @@
+data/dataset1.csv:
+Best expression (inorder): ((6 - ((x + -6) - (-1 / (0 * 8)))) + (((x + -6) * x) + ((-1 / ((0 * x) * 8)) + (x - 0))))
+Best expression (inorder + simplified): nan
+MSE: 0.000595
+
+data/dataset2.csv:
+Best expression (inorder): (7 - (((((x3 - 7) - (7 + 7)) - 7) * (((x2 / (((x3 / 1) * x2) + ((-2 - -1) + 2))) * 7) - (7 + 7))) * (7 + 2)))
+Best expression (inorder + simplified): -63*x2*x3/(x2*x3 + 1) + 1764*x2/(x2*x3 + 1) + 126*x3 - 3521
+MSE: 922086692398697600.000000
