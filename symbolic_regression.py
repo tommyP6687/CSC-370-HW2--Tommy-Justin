@@ -15,13 +15,16 @@ def sr(file_name):
     # 0) load data/populate relevant lists
     x, x1, x2, x3, y = read_data(file_name)
     
+    # dataset 2 has x1, x2, x3. dataset 1 has x
+    variables = ('x1', 'x2', 'x3') if x1 else ('x',)
+    
     # 1) build initial population of random trees & add set to prevent recurring trees
     population = []
     seen = set()
     
     while len(population) < POP_SIZE:
         # generate trees and add to set
-        tree = Tree.random_tree(max_depth=4)
+        tree = Tree.random_tree(max_depth=4, variables=variables)
         expression = tree.inorder()
         
         if expression not in seen:
@@ -31,7 +34,7 @@ def sr(file_name):
     # 2) iterate through each generation 
     for g in range(GEN):
         # rank each tree by fitness score (sorted by lowest MSE trees first)
-        population.sort(key=lambda t: t.fitness(x, y))
+        population.sort(key=lambda t: t.fitness(x, y, x1, x2, x3))
         
         # keep best trees (arbitrary, could be 20 best trees)
         survivors = population[:SURVIVORS]
@@ -60,7 +63,7 @@ def sr(file_name):
                     population.append(child)
             
     # 3) output best tree expression (str form)
-    population.sort(key=lambda t: t.fitness(x, y))
+    population.sort(key=lambda t: t.fitness(x, y, x1, x2, x3))
     best = population[0]
     best_inorder = best.inorder()
     
@@ -69,8 +72,11 @@ def sr(file_name):
     
     print(f"Best expression (inorder): {best_inorder}")
     print(f"Best expression (inorder + simplified): {simple}")
-    print(f"MSE: {best.fitness(x, y):.6f}") # round value to six decimal places
+    print(f"MSE: {best.fitness(x, y, x1, x2, x3):.6f}") # round value to six decimal places
     return best
 
 if __name__ == '__main__':
-    sr('data/dataset1.csv')
+    # run both datasets (1 & 2 )
+    for file in ['data/dataset1.csv', 'data/dataset2.csv']:
+        print(f"\n{file}:")
+        sr(file)

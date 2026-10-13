@@ -169,18 +169,23 @@ class Tree:
         mse = 0
         
         # 0) Iterate through each x and y value in the dataset
-        for index in range(len(x_list)):
+        for index in range(len(y_list)):
             # 1) Traverse the tree, substitute variables with 'x' values, and evaluate y'
-            y_prime = self.compute_tree(self.root, x_list[index])
+            
+            if x1_list: # dataset 2
+                y_prime = self.compute_tree(self.root, x1=x1_list[index], x2=x2_list[index], x3=x3_list[index])
+            else: # dataset 1
+                y_prime = self.compute_tree(self.root, x=x_list[index])
             
             # 2) Compute yΔ
-            y_delta  = (y_list[index] - y_prime) ** 2
+            diff = y_list[index] - y_prime
+            y_delta  = diff * diff
             
             # 3) Add to total MSE
             mse += y_delta
         
         # divide by total # of points to get real MSE
-        mse /= len(x_list)
+        mse /= len(y_list)
         
         # return MSE value
         return mse
