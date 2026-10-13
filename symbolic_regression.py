@@ -1,6 +1,7 @@
 """Executes genetic programming to discover an expression that best fits a given dataset
 """
 import random
+import sympy # for evaluating expression string
 from tree import Tree
 from read_data import read_data
 
@@ -61,8 +62,14 @@ def sr(file_name):
     # 3) output best tree expression (str form)
     population.sort(key=lambda t: t.fitness(x, y))
     best = population[0]
-    print(f"Best expression: {best.inorder()}")
-    print(f"MSE: {best.fitness(x, y)}") 
+    best_inorder = best.inorder()
+    
+    # get more readable form of best expression 
+    simple = sympy.expand(sympy.sympify(best_inorder))
+    
+    print(f"Best expression (inorder): {best_inorder}")
+    print(f"Best expression (inorder + simplified): {simple}")
+    print(f"MSE: {best.fitness(x, y):.6f}") # round value to six decimal places
     return best
 
 if __name__ == '__main__':
