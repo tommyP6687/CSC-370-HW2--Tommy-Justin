@@ -149,35 +149,29 @@ class Tree:
 
         #new trees are returned
         return clone1, clone2 
-
-
         
     # Fitness function and relevant helpers
-    def fitness(self, root, x_list, y_list, population, seen, x1_list=None, x2_list=None, x3_list=None): # mine
-        """Determines if a randomly generated function is 'acceptable' for a given dataset
+    def fitness(self, x_list, y_list, x1_list=None, x2_list=None, x3_list=None): # mine
+        """Computes MSE value for a given expression tree
         
         1) Calculate y' = f(x) for each data point in the dataset
         2) Calculate yΔ (difference between y' and y in data set, then squared) for each point
         3) Calculate mean squared error via Σ(yΔ)/# of data points
-        4) Keep/Discard function/expression tree based on whether its MSE falls within the acceptable range
         
         Args:
             root (TreeNode): root node of expression tree
             x_list (List): contains all x-values in dataset
-            y_list (List): contains all y-values in dataset
-            population (Array List): contains current population 
-            seen (Set): contains all encountered specimen in the population
-            
+            y_list (List): contains all y-values in dataset            
 
         Returns:
-            bool: True if acceptable. False otherwise
+            float: MSE value computed
         """
         mse = 0
         
         # 0) Iterate through each x and y value in the dataset
         for index in range(len(x_list)):
             # 1) Traverse the tree, substitute variables with 'x' values, and evaluate y'
-            y_prime = self.compute_tree(root, x_list[index])
+            y_prime = self.compute_tree(self.root, x_list[index])
             
             # 2) Compute yΔ
             y_delta  = (y_list[index] - y_prime) ** 2
@@ -188,17 +182,8 @@ class Tree:
         # divide by total # of points to get real MSE
         mse /= len(x_list)
         
-        # 4) Determine if our mse value falls within the acceptable range (off by 10 is max? arbitrary)
-        if mse <= 10: 
-            # if acceptable, check set (if DNE yet, add to population list and set)
-            if root not in seen:
-                population.append(self)
-                seen.add(root)
-                return True
-            # otherwise, already in set, don't add to population (already exists)
-        
-        # return False if not acceptable MSE or already exists
-        return False
+        # return MSE value
+        return mse
     
     # Traversal functions
     def inorder(self, root=None):
@@ -259,6 +244,22 @@ class Tree:
             return 1
         
         return OPERATORS[op](left, right)
+    
+    def tree_depth(self, node):
+        """Recursively find the max depth of a subtree from node
+
+        Args:
+            node (TreeNode): starting point node
+
+        Returns:
+            int: depth of subtree from node
+        """
+        # base case: beyond leaf
+        if node is None:
+            return 0
+        
+        # recursive case: increment depth by 1 and take max of recursive traversal left and right
+        return 1 + max(self.tree_depth(node.left), self.tree_depth(node.right))
     
     @classmethod
     def random_tree(cls, max_depth=5, variables=('x',), int_constants=True, const_range=(-10, 10)):

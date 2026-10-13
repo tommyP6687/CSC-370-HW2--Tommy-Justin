@@ -4,9 +4,11 @@ import random
 from tree import Tree
 from read_data import read_data
 
-# set constants (population size and # of generations)
+# set constants (population size, # of generations, # of survivors at each generation, and mutation/crossover rates)
 POP_SIZE = 100
 GEN = 50
+SURVIVORS = 20 
+MUTATION_RATE = 0.4
 
 def sr(file_name):
     # 0) load data/populate relevant lists
@@ -18,16 +20,50 @@ def sr(file_name):
     
     while len(population) < POP_SIZE:
         # generate trees and add to set
-        pass # placeholder
+        tree = Tree.random_tree(max_depth=4)
+        expression = tree.inorder()
+        
+        if expression not in seen:
+            seen.add(expression)
+            population.append(tree)
     
     # 2) iterate through each generation 
     for g in range(GEN):
-        # apply fitness function to each tree and obtain score
+        # rank each tree by fitness score (sorted by lowest MSE trees first)
+        population.sort(key=lambda t: t.fitness(x, y))
+        
         # keep best trees (arbitrary, could be 20 best trees)
-        # generate new trees using mutate()/crossover() until POP_SIZE is full
-        pass # placeholder
-    
-    # 3) output best tree (expression) --> use inorder() to get expression in str form
+        survivors = population[:SURVIVORS]
+        population = list(survivors)
+        
+        # generate children using survivors until full
+        while len(population) < POP_SIZE:
+            rand = random.random()
+            
+            # mutation
+            if rand < MUTATION_RATE:
+                children = [random.choice(survivors).mutate()]
+            
+            # crossover
+            else:                
+                parent1, parent2 = random.sample(survivors, 2)
+                children = parent1.crossover(parent2)
+        
+            for child in children:
+                # discard bloated trees and duplicates
+                if child.tree_depth(child.root) > child.max_depth:
+                    continue
+                expression = child.inorder()
+                if expression not in seen and len(population) < POP_SIZE:
+                    seen.add(expression)
+                    population.append(child)
+            
+    # 3) output best tree expression (str form)
+    population.sort(key=lambda t: t.fitness(x, y))
+    best = population[0]
+    print(f"Best expression: {best.inorder()}")
+    print(f"MSE: {best.fitness(x, y)}") 
+    return best
 
 if __name__ == '__main__':
     sr('data/dataset1.csv')
