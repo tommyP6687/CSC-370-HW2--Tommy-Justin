@@ -70,6 +70,10 @@ def sr(file_name):
     # get more readable form of best expression 
     simple = sympy.expand(sympy.sympify(best_inorder))
     
+    #checks if expression is undefined
+    if simple.has(sympy.nan, sympy.zoo):
+        simple = "cannot simplify expression"
+    
     print(f"Best expression (inorder): {best_inorder}")
     print(f"Best expression (inorder + simplified): {simple}")
     print(f"MSE: {best.fitness(x, y, x1, x2, x3):.6f}") # round value to six decimal places
