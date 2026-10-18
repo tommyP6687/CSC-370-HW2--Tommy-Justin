@@ -266,6 +266,12 @@ class Tree:
         # recursive case: increment depth by 1 and take max of recursive traversal left and right
         return 1 + max(self.tree_depth(node.left), self.tree_depth(node.right))
     
+    def tree_size(self):
+        """Returns the number of nodes in the tree"""
+        nodes = []
+        self.collect_nodes(self.root, nodes)
+        return len(nodes)
+    
     @classmethod
     def random_tree(cls, max_depth=5, variables=('x',), int_constants=True, const_range=(-10, 10)):
         """Generate random expression tree
