@@ -1,0 +1,33 @@
+Job started: Sun Oct 18 18:37:24 EDT 2026
+
+data/dataset1.csv (80/20 split):
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 11 nodes
+Best expression (inorder): ((-7 - (7 + (x * (x + -6)))) * -1)
+Best expression (inorder + simplified): x**2 - 6*x + 14
+
+data/dataset1.csv (no split):
+Train MSE: 0.133162
+Test MSE: 0.133162
+Tree size: 21 nodes
+Best expression (inorder): ((((2 + -9) * x) + 2) + (((x + x) * (6 / x)) + (x + (x * x))))
+Best expression (inorder + simplified): x**2 - 6*x + 14
+
+data/dataset2.csv (80/20 split):
+excluded 13 rows with x3 = 0.00
+Train MSE: 395891129647.467224
+Test MSE: 483048868039.529907
+Tree size: 21 nodes
+Best expression (inorder): ((10 - (((10 - (x2 / 10)) / (0 - (5 * x3))) / 10)) / (0 - (5 * x3)))
+Best expression (inorder + simplified): x2/(2500*x3**2) - 2/x3 - 1/(25*x3**2)
+
+data/dataset2.csv (no split):
+excluded 13 rows with x3 = 0.00
+Train MSE: 436545087887.999695
+Test MSE: 436545087887.999695
+Tree size: 29 nodes
+Best expression (inorder): ((((-9 * ((x2 / ((x3 * (9 + x3)) - -7)) * 3)) + (x2 / x3)) / ((x2 / x1) + 3)) / ((x3 * 10) - -7))
+Best expression (inorder + simplified): -27*x2/(30*x3**3 + 291*x3**2 + 399*x3 + 147 + 10*x2*x3**3/x1 + 97*x2*x3**2/x1 + 133*x2*x3/x1 + 49*x2/x1) + x2/(30*x3**2 + 21*x3 + 10*x2*x3**2/x1 + 7*x2*x3/x1)
+Job finished: Sun Oct 18 19:31:38 EDT 2026
+Total run time: 00:54:14 (hh:mm:ss)

@@ -1,0 +1,18 @@
+Job started: Sun Oct 18 13:18:45 EDT 2026
+
+data/dataset1.csv (80/20 split):
+Train MSE: 1.000843
+Test MSE: 1.001474
+Tree size: 21 nodes
+Best expression (inorder): ((((x * (6 * x)) - (-6 * -3)) / 6) - (((5 * x) - (-6 * -3)) + x))
+Best expression (inorder + simplified): x**2 - 6*x + 15
+
+data/dataset1.csv (no split):
+Train MSE: 0.000595
+Test MSE: 0.000595
+Tree size: 13 nodes
+Best expression (inorder): ((2 + (x * x)) + ((x + -2) * (-2 - 4)))
+Best expression (inorder + simplified): x**2 - 6*x + 14
+
+data/dataset2.csv (80/20 split):
+slurmstepd-compute0: error: *** JOB 345971 ON compute0 CANCELLED AT 2026-10-18T15:48:54 DUE TO TIME LIMIT ***

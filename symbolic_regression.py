@@ -23,8 +23,8 @@ def train_test_split(x, x1, x2, x3, y, test_frac=0.2, seed=0):
     def pick(lst, ids):
         return [lst[i] for i in ids] if lst else []
     
-    train = [pick(lst, index[:cut]) for lst in (x, x1, x2, x3, y)]
-    test = [pick(lst, index[cut:]) for lst in (x, x1, x2, x3, y)]
+    train = [pick(lst, index[:cut]) for lst in (x, y, x1, x2, x3)]
+    test = [pick(lst, index[cut:]) for lst in (x, y, x1, x2, x3)]
     
     return train, test
 
@@ -35,18 +35,27 @@ def sr(file_name, use_split=True):
     # dataset 2 has x1, x2, x3. dataset 1 has x
     variables = ('x1', 'x2', 'x3') if x1 else ('x',)
     
+    # dataset 2: exclude outliers rows where x3 = 0.00 (real x3 values lost due to rounding)
+    if x1:
+        keep = [i for i in range(len(y)) if x3[i] != 0]
+        x1 = [x1[i] for i in keep]
+        x2 = [x2[i] for i in keep]
+        x3 = [x3[i] for i in keep]
+        y = [y[i] for i in keep]
+        print(f"excluded {25000-len(y)} rows with x3 = 0.00")
+    
     # divide dataset into train (evolve expression) and test (check for overfitting)
     if use_split:
         train, test = train_test_split(x, x1, x2, x3, y)
     else: 
         # not split: evolve on all data (for comparison purposes)
-        train = [x, x1, x2, x3, y]
+        train = [x, y, x1, x2, x3]
         test = train
     
     # 0.5 (Added)) normalize MSE so result is comparable across datasets
     
     # variance of training y 
-    y_train = train[4] # y column 
+    y_train = train[1] # y column 
     mean_y = sum(y_train) / len(y_train)
     var_y = sum((v - mean_y) ** 2 for v in y_train) / len(y_train)
     
@@ -58,7 +67,7 @@ def sr(file_name, use_split=True):
     population = []
     seen = set()
     
-    while len(population) < POP_SIZE:
+    while len(population) < POP_SIZE:       
         # generate trees and add to set
         tree = Tree.random_tree(max_depth=4, variables=variables)
         expression = tree.inorder()
@@ -76,12 +85,20 @@ def sr(file_name, use_split=True):
         survivors = population[:SURVIVORS]
         population = list(survivors)
         
+        # prevent infinite loop
+        attempts = 0
+        
         # generate children using survivors until full
         while len(population) < POP_SIZE:
+            attempts += 1
             rand = random.random()
+                    
+            # stuck (survivors only produce duplicates) --> add a fresh random tree
+            if attempts > 10 * POP_SIZE:
+                children = [Tree.random_tree(max_depth=4, variables=variables)]
             
             # mutation
-            if rand < MUTATION_RATE:
+            elif rand < MUTATION_RATE:
                 children = [random.choice(survivors).mutate()]
             
             # crossover
@@ -104,7 +121,7 @@ def sr(file_name, use_split=True):
     best_inorder = best.inorder()
     
     # get more readable form of best expression 
-    simple = sympy.expand(sympy.sympify(best_inorder))
+    simple = sympy.expand(best.to_sympy())
     
     # print MSE on train and test data
     print(f"Train MSE: {best.fitness(*train):.6f}") 

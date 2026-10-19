@@ -5,6 +5,7 @@ Contains functions to represent and manipulate individuals/trees in our populati
 import copy # tree cloning
 import random # for random selections
 import operator 
+import sympy # for simplifying expressions
 
 # Operators 
 OPERATORS = {
@@ -249,6 +250,35 @@ class Tree:
             return 1
         
         return OPERATORS[op](left, right)
+    
+    def to_sympy(self, root=None):
+        """Converts expression tree to a sympy expression (uses same protected division as compute_tree)
+        
+        Args:
+            root (TreeNode, optional): starting node. Defaults to the tree's root.
+        
+        Returns:
+            sympy expression of the tree
+        """
+        if root is None:
+            root = self.root
+        
+        # base case: leaf node (variable = symbol, constant = number)
+        if root.is_leaf():
+            if isinstance(root.value, str):
+                return sympy.Symbol(root.value)
+            return sympy.sympify(root.value)
+        
+        # post-order traversal
+        left = self.to_sympy(root.left)
+        right = self.to_sympy(root.right)
+        
+        # protected division
+        if root.value == '/' and right == 0:
+            return sympy.Integer(1)
+        
+        # combine subtrees using root operator
+        return OPERATORS[root.value](left, right)
     
     def tree_depth(self, node):
         """Recursively find the max depth of a subtree from node
