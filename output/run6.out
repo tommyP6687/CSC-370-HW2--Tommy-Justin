@@ -1,0 +1,11 @@
+Job started: Sun Oct 18 20:59:27 EDT 2026
+
+data/dataset2.csv (80/20 split):
+excluded 13 rows with x3 = 0.00
+Train MSE: 550203774460.721802
+Test MSE: 877629425460.613892
+Tree size: 5 nodes
+Best expression (inorder): ((1799.3448601796943 / x3) / x3)
+Best expression (inorder + simplified): 1799.34486017969/x3**2
+Job finished: Sun Oct 18 21:04:45 EDT 2026
+Total run time: 00:05:18 (hh:mm:ss)

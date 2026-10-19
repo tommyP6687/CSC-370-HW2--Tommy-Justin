@@ -6,6 +6,7 @@ import copy # tree cloning
 import random # for random selections
 import operator 
 import sympy # for simplifying expressions
+import math # for checking finite values
 
 # Operators 
 OPERATORS = {
@@ -58,6 +59,8 @@ class Tree:
         self.int_constants = int_constants
         self.const_range = const_range
         self.max_depth = max_depth
+        self.a = 0 # linear scaling intercept (set by fitness)
+        self.b = 1 # linear scaling slope (set by fitness)
     
     # Genetic operations
     def mutate(self):
@@ -87,11 +90,9 @@ class Tree:
                 # case 1: replace with variable (e.g., 'x') if probability < 0.5
                 if random.random() < 0.5:
                     new = random.choice(clone.variables) # break if only have 'x'
-                # case 2 & 3: replace with value (constant = int/real) otherwise
-                elif clone.int_constants:
-                    new = random.randint(low, high)
-                else: 
-                    new = random.uniform(low, high)
+                # case 2: replace with value (constant = int/real) otherwise
+                else:
+                    new = Tree.random_constant(clone.int_constants, clone.const_range)
                     
             # instead of repeatedly trying to create a unique tree, just compare to set at the end and quit (think)
             
@@ -150,43 +151,72 @@ class Tree:
 
         #new trees are returned
         return clone1, clone2 
-        
-    # Fitness function and relevant helpers
-    def fitness(self, x_list, y_list, x1_list=None, x2_list=None, x3_list=None): # mine
-        """Computes MSE value for a given expression tree
-        
-        1) Calculate y' = f(x) for each data point in the dataset
-        2) Calculate yΔ (difference between y' and y in data set, then squared) for each point
-        3) Calculate mean squared error via Σ(yΔ)/# of data points
-        
-        Args:
-            root (TreeNode): root node of expression tree
-            x_list (List): contains all x-values in dataset
-            y_list (List): contains all y-values in dataset            
+    
+    def predict(self, x_list, y_list, x1_list=None, x2_list=None, x3_list=None):
+        """Evaluates the tree on each data row
 
         Returns:
-            float: MSE value computed
+            List: tree output for each row
+        """
+        preds = []
+        for index in range(len(y_list)):
+            if x1_list: # dataset 2
+                preds.append(self.compute_tree(self.root, x1=x1_list[index], x2=x2_list[index], x3=x3_list[index]))
+            else: # dataset 1
+                preds.append(self.compute_tree(self.root, x=x_list[index]))
+        return preds
+        
+    # Fitness function and relevant helpers
+    def fitness(self, x_list, y_list, x1_list=None, x2_list=None, x3_list=None, a=None, b=None):
+        """Computes scaled MSE value for a given expression tree
+        
+        1) Calculate y' = f(x) for each data point (row) in the dataset and collect into y_primes (via predict)
+        2) Calculate best slope b and intercept a for the tree (linear scaling): b = cov(y', y) / var(y'), a = mean(y) - b * mean(y')
+        3) Calculate yΔ (difference between scaled y' (= a + b * y') and y in data set, then squared) for each point
+        4) Calculate mean squared error via Σ(yΔ)/# of data points
+        
+        Args:
+            x_list (List): contains all x-values in dataset
+            y_list (List): contains all y-values in dataset    
+            x1_list, x2_list, x3_list (List, optional): contains all x1, x2, x3 values (dataset 2)
+            a (float, optional): intercept to use instead of computing it (e.g., training a on test data)
+            b (float, optional): slope to use instead of computing it (e.g., training b on test data)        
+
+        Returns:
+            float: scaled MSE value computed
         """
         mse = 0
         
-        # 0) Iterate through each x and y value in the dataset
+        # 1) Traverse the tree for each data point and evaluate y'
+        y_primes = self.predict(x_list, y_list, x1_list, x2_list, x3_list)
+        
+        # 2) Compute best slope b and intercept a (linear scaling), unless given 
+        if a is None or b is None:
+            mean_y_prime = sum(y_primes) / len(y_list)
+            mean_y = sum(y_list) / len(y_list)
+            cov = sum((y_primes[index] - mean_y_prime) * (y_list[index] - mean_y) for index in range(len(y_list)))
+            var = sum((y_primes[index] - mean_y_prime) ** 2 for index in range(len(y_list)))
+            # constant tree (no variance) -> b = 0, a = mean(y)
+            b = cov / var if var != 0 else 0
+            a = mean_y - b * mean_y_prime
+            # store on tree (for final formula & test MSE)
+            self.a, self.b = a, b
+        
+        # 3) Iterate through each y' and y value in the dataset 
         for index in range(len(y_list)):
-            # 1) Traverse the tree, substitute variables with 'x' values, and evaluate y'
+            # compute yΔ using scaled y'
+            diff = y_list[index] - (a + b * y_primes[index])
+            y_delta = diff * diff
             
-            if x1_list: # dataset 2
-                y_prime = self.compute_tree(self.root, x1=x1_list[index], x2=x2_list[index], x3=x3_list[index])
-            else: # dataset 1
-                y_prime = self.compute_tree(self.root, x=x_list[index])
-            
-            # 2) Compute yΔ
-            diff = y_list[index] - y_prime
-            y_delta  = diff * diff
-            
-            # 3) Add to total MSE
+            # add to total MSE 
             mse += y_delta
         
-        # divide by total # of points to get real MSE
+        # 4) Divide by total # of points to get real MSE
         mse /= len(y_list)
+        
+        # 5) trees with inf/nan outputs get worst score (nan breaks sorting)
+        if not math.isfinite(mse):
+            return float('inf')
         
         # return MSE value
         return mse
@@ -302,6 +332,16 @@ class Tree:
         self.collect_nodes(self.root, nodes)
         return len(nodes)
     
+    def has_variable(self):
+        """Checks if tree uses at least one variable
+        
+        Returns:
+            bool: True if any leaf is a variable, False if tree is constants only
+        """
+        nodes = []
+        self.collect_nodes(self.root, nodes)
+        return any(node.is_leaf() and isinstance(node.value, str) for node in nodes)
+    
     @classmethod
     def random_tree(cls, max_depth=5, variables=('x',), int_constants=True, const_range=(-10, 10)):
         """Generate random expression tree
@@ -321,11 +361,9 @@ class Tree:
             # case 1: variable (e.g., 'x') if probability < 0.5
             if random.random() < 0.5:
                 leaf = random.choice(variables) # break if only have 'x'
-            # case 2 & 3: value (constant = int/real) otherwise
-            elif int_constants:
-                leaf = random.randint(low, high)
+            # case 2: value (constant = int/real) otherwise
             else: 
-                leaf = random.uniform(low, high)
+                leaf = Tree.random_constant(int_constants, const_range)
             
             return TreeNode(leaf)
             
@@ -342,6 +380,24 @@ class Tree:
         right = Tree.random_node(depth-1, variables, int_constants, const_range)
         
         return TreeNode(op, left, right)
+    
+    @staticmethod
+    def random_constant(int_constants, const_range):
+        """Generate random constant: integer in const_range, or reals on a log scale
+
+        Args:
+            int_constants (bool): True for integer, False for reals
+            const_range (tuple): (low, high) values for integers, or (low, high) exponents of 10 for reals
+            
+        Returns:
+            int/float: random constant
+        """
+        low, high = const_range
+        # integer constant (dataset 1): same as before 
+        if int_constants:
+            return random.randint(low, high)
+        # real-valued constant (dataset 2)
+        return random.choice([-1, 1]) * 10 ** random.uniform(low, high)
 
 # you have x, y, y_tree
 

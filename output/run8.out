@@ -1,0 +1,20 @@
+Job started: Mon Oct 19 02:06:27 EDT 2026
+
+data/dataset1.csv (80/20 split):
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): ((x + -6) * x)
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+
+data/dataset2.csv (80/20 split):
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089075
+Tree size: 9 nodes
+Best expression (inorder): ((-2349904795.7488537 / x3) * (x2 * (x1 / x3)))
+Linear scaling: a = 272.4207285149678, b = -2.6651745093179208e-20
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514968
+Job finished: Mon Oct 19 02:21:52 EDT 2026
+Total run time: 00:15:25 (hh:mm:ss)
