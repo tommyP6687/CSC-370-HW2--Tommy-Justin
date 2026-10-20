@@ -5,16 +5,21 @@ import sympy # for evaluating expression string
 from tree import Tree
 from read_data import read_data
 import time
+import math
 
 # set constants (population size, # of generations, # of survivors at each generation, and mutation/crossover rates)
 POP_SIZE = 100
 GEN = 50
 SURVIVORS = 20 
 EXTERNAL = 10 # fresh random trees added every generation (promote diversity)
-MUTATION_RATE = 0.4
+MUTATION_RATE = 0.1
+# linear scaling switch
+LINEAR_SCALING = True
+# relative error switch
+RELATIVE_ERROR = False
 
 # dataset 2: minimum x3 kept (x3 rounded to 2 decimals, so small x3 values have large relative error in 1/x3^2)
-X3_MIN = 0.02
+X3_MIN = 0.5
 
 # penalty per node for complex expression trees
 PEN = 0.001
@@ -40,10 +45,15 @@ def sr(file_name, use_split=True):
     # dataset 2 has x1, x2, x3. dataset 1 has x
     variables = ('x1', 'x2', 'x3') if x1 else ('x',)
     
-    # dataset 2: real-valued constants on a log scale, 10^-14 to 10^14
-    # (inputs up to ~10^7, so a product of two inputs ~10^14, arbitrary assumption)
+    # only apply linear scaling for dataset 2
+    scaling = LINEAR_SCALING and bool(x1)
+    
+    # relative error only for dataset 2
+    relative = RELATIVE_ERROR and bool(x1)
+    
+    # dataset 2: real-valued constants 
     int_constants = not x1
-    const_range = (-14, 14) if x1 else (-10, 10)
+    const_range = (-10, 10)
     
     # dataset 2: exclude outliers rows where x3 <= X3_MIN (real x3 values lost due to rounding)
     if x1:
@@ -67,12 +77,17 @@ def sr(file_name, use_split=True):
     
     # variance of training y 
     y_train = train[1] # y column 
-    mean_y = sum(y_train) / len(y_train)
-    var_y = sum((v - mean_y) ** 2 for v in y_train) / len(y_train)
+    w = [1 / max(v * v, 1.0) for v in y_train] if relative else [1.0] * len(y_train)
+    mean_y = sum(wi * v for wi, v in zip(w, y_train)) / sum(w)
+    var_y = sum(wi * (v - mean_y) ** 2 for wi, v in zip(w, y_train)) / sum(w)
     
     def penalized_fitness(t):
         """Normalizes train MSE and size penalty (lower is better)"""
-        return t.fitness(*train) / var_y + PEN * t.tree_size()
+        if scaling:
+            mse = t.fitness(*train, relative=relative) # linear scaling enabled
+        else:
+            mse = t.fitness(*train, a=0, b=1, relative=relative) # linear scaling disabled
+        return mse / var_y + PEN * t.tree_size()
     
     # 1) build initial population of random trees & add set to prevent recurring trees
     population = []
@@ -143,10 +158,16 @@ def sr(file_name, use_split=True):
     best = population[0]
     best_inorder = best.inorder()
     
-    # scaled MSE on train (also sets best.a, best.b from the training data)
-    train_mse = best.fitness(*train)
-    # test MSE reuses the training a, b (don't refit on test data, keeps the test honest)
+    # train MSE (with scaling)
+    if scaling:
+        train_mse = best.fitness(*train, relative=relative)
+    
+    train_mse = best.fitness(*train, a=best.a, b=best.b)
+    
+    # test MSE reuses trained a, b (a=0, b=1 when scaling disabled)
     test_mse = best.fitness(*test, a=best.a, b=best.b)
+    # relative error (mean square % error) ontest
+    test_rel = best.fitness(*test, a=best.a, b=best.b, relative=True)
     
     # final formula = a + b * tree (simplified, readable form)
     simple = sympy.expand(best.a + best.b * best.to_sympy())
@@ -154,6 +175,7 @@ def sr(file_name, use_split=True):
     # print MSE on train and test data
     print(f"Train MSE: {train_mse:.6f}")
     print(f"Test MSE: {test_mse:.6f}")
+    print(f"Test relative error (RMS %): {math.sqrt(test_rel) * 100:.3f}%")
     
     # size (# of nodes) of best tree
     print(f"Tree size: {best.tree_size()} nodes")
@@ -163,26 +185,37 @@ def sr(file_name, use_split=True):
     print(f"Linear scaling: a = {best.a}, b = {best.b}")
     print(f"Best expression (a + b * tree, simplified): {simple}")
     
-    return best
+    # return best model of this run, its test MSE, and its simplified expression
+    return best, test_mse, simple
 
 if __name__ == '__main__':
-    RUNS = 5 # test how reliable expressions are (multiple convergences to same expression or does it vary)
+    RUNS = 10 # test how reliable expressions are (multiple convergences to same expression or does it vary)
     # run both datasets (1 & 2 )
     for file in [
-        'data/dataset1.csv', 
-        'data/dataset2.csv']:
+        'data/dataset1.csv',
+        'data/dataset2.csv'
+        ]:
         durations = []
+        results = [] # (test MSE, run #, simplified expression) for each run
     
         for run in range(RUNS):
-            print(f"\n{file} (80/20 split), run {run + 1}/{RUNS}:")
+            scaled = LINEAR_SCALING and 'dataset2' in file
+            print(f"\n{file} (80/20 split, linear scaling = {scaled}), run {run + 1}/{RUNS}:")
             
             start = time.time()
-            sr(file, use_split=True)
+            best, test_mse, simple = sr(file, use_split=True)
             duration = time.time() - start
             durations.append(duration)
+            results.append((test_mse, run + 1, simple))
             print(f"Run time: {duration:.1f} s")
+            
+        # select overall best model across runs by test MSE
+        best_test_mse, best_run, best_expr = min(results, key=lambda r: r[0])
         
         # per-dataset summary 
         print(f"\n-----{file} summary ({RUNS} runs)-----")
         print(f"Run times (s): {[round(d, 1) for d in durations]}")
         print(f"Average: {sum(durations) / RUNS:.1f} s")
+        print(f"Test MSEs: {[round(r[0], 6) for r in results]}")
+        print(f"Best model (lowest test MSE): run {best_run}, test MSE = {best_test_mse:.6f}")
+        print(f"Best expression: {best_expr}")

@@ -167,7 +167,7 @@ class Tree:
         return preds
         
     # Fitness function and relevant helpers
-    def fitness(self, x_list, y_list, x1_list=None, x2_list=None, x3_list=None, a=None, b=None):
+    def fitness(self, x_list, y_list, x1_list=None, x2_list=None, x3_list=None, a=None, b=None, relative=False):
         """Computes scaled MSE value for a given expression tree
         
         1) Calculate y' = f(x) for each data point (row) in the dataset and collect into y_primes (via predict)
@@ -190,29 +190,34 @@ class Tree:
         # 1) Traverse the tree for each data point and evaluate y'
         y_primes = self.predict(x_list, y_list, x1_list, x2_list, x3_list)
         
+        # row weights: 1 (plain MSE) or 1/y^2 (relative error, floor divisioned at 1 to avoid dividing by ~0=y)
+        if relative:
+            w = [1 / max(y * y, 1.0) for y in y_list]
+        else:
+            w = [1.0] * len(y_list)
+        sw = sum(w)
+        
         # 2) Compute best slope b and intercept a (linear scaling), unless given 
         if a is None or b is None:
-            mean_y_prime = sum(y_primes) / len(y_list)
-            mean_y = sum(y_list) / len(y_list)
-            cov = sum((y_primes[index] - mean_y_prime) * (y_list[index] - mean_y) for index in range(len(y_list)))
-            var = sum((y_primes[index] - mean_y_prime) ** 2 for index in range(len(y_list)))
+            mean_y_prime = sum(w[i] * y_primes[i] for i in range(len(y_list))) / sw
+            mean_y = sum(w[i] * y_list[i] for i in range(len(y_list))) / sw
+            cov = sum(w[i] * (y_primes[i] - mean_y_prime) * (y_list[i] - mean_y) for i in range(len(y_list)))
+            var = sum(w[i] * (y_primes[i] - mean_y_prime) ** 2 for i in range(len(y_list)))
             # constant tree (no variance) -> b = 0, a = mean(y)
             b = cov / var if var != 0 else 0
             a = mean_y - b * mean_y_prime
             # store on tree (for final formula & test MSE)
             self.a, self.b = a, b
         
+        mse = 0
         # 3) Iterate through each y' and y value in the dataset 
         for index in range(len(y_list)):
             # compute yΔ using scaled y'
             diff = y_list[index] - (a + b * y_primes[index])
-            y_delta = diff * diff
-            
-            # add to total MSE 
-            mse += y_delta
+            mse += w[index] * diff * diff
         
         # 4) Divide by total # of points to get real MSE
-        mse /= len(y_list)
+        mse /= sw
         
         # 5) trees with inf/nan outputs get worst score (nan breaks sorting)
         if not math.isfinite(mse):
@@ -383,11 +388,11 @@ class Tree:
     
     @staticmethod
     def random_constant(int_constants, const_range):
-        """Generate random constant: integer in const_range, or reals on a log scale
+        """Generate random constant: integer/reals in const_range
 
         Args:
             int_constants (bool): True for integer, False for reals
-            const_range (tuple): (low, high) values for integers, or (low, high) exponents of 10 for reals
+            const_range (tuple): (low, high) range of constant values
             
         Returns:
             int/float: random constant
@@ -397,7 +402,7 @@ class Tree:
         if int_constants:
             return random.randint(low, high)
         # real-valued constant (dataset 2)
-        return random.choice([-1, 1]) * 10 ** random.uniform(low, high)
+        return random.uniform(low, high)
 
 # you have x, y, y_tree
 

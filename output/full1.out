@@ -1,0 +1,227 @@
+Job started: Tue Oct 20 01:25:36 EDT 2026
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 1/10:
+Train MSE: 0.198011
+Test MSE: 0.197757
+Test relative error (RMS %): 44.449%
+Tree size: 21 nodes
+Best expression (inorder): ((((x - 5) - (5 / -3)) * ((x - 5) - (4 / -3))) - ((4 / -3) - x))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 122/9
+Run time: 799.1 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 2/10:
+Train MSE: 2.790109
+Test MSE: 2.789876
+Test relative error (RMS %): 141.205%
+Tree size: 23 nodes
+Best expression (inorder): (((6 * ((x + (8 / x)) / (5 / x))) - ((-1 - (x * -7)) - x)) + (x / x))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): 6*x**2/5 - 6*x + 58/5
+Run time: 1050.9 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 3/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Test relative error (RMS %): 0.923%
+Tree size: 13 nodes
+Best expression (inorder): (((x + 6) - -7) - (-1 - (x * (-7 + x))))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 14
+Run time: 683.3 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 4/10:
+Train MSE: 1.918144
+Test MSE: 1.931623
+Test relative error (RMS %): 193.143%
+Tree size: 19 nodes
+Best expression (inorder): (((x + ((x + x) + -10)) / ((x / (x + -3)) - (x / x))) - -3)
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): 3*x/(x/(x - 3) - 1) + 3 - 10/(x/(x - 3) - 1)
+Run time: 936.8 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 5/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Test relative error (RMS %): 0.923%
+Tree size: 23 nodes
+Best expression (inorder): (((5 - ((x + -6) + (x - x))) - ((x * (4 - x)) - x)) - ((x + -3) + x))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 14
+Run time: 914.5 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 6/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Test relative error (RMS %): 0.923%
+Tree size: 13 nodes
+Best expression (inorder): ((2 - -3) - ((-3 + x) * (1 - (x - 2))))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 14
+Run time: 701.4 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 7/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Test relative error (RMS %): 0.923%
+Tree size: 23 nodes
+Best expression (inorder): ((((x + 1) - -3) - (-10 + (x * ((10 - x) - ((x / x) - (-10 / 10)))))) + x)
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 14
+Run time: 840.1 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 8/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Test relative error (RMS %): 0.923%
+Tree size: 17 nodes
+Best expression (inorder): (((x + x) - (-3 + (x * 8))) + (((x * x) + 9) - -2))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 14
+Run time: 862.6 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 9/10:
+Train MSE: 1.000340
+Test MSE: 0.999746
+Test relative error (RMS %): 99.999%
+Tree size: 21 nodes
+Best expression (inorder): ((6 - -7) + (((((x + x) - (x + (x + -2))) - (9 - x)) * x) + x))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 13
+Run time: 987.0 s
+
+data/dataset1.csv (80/20 split, linear scaling = False), run 10/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Test relative error (RMS %): 0.923%
+Tree size: 15 nodes
+Best expression (inorder): ((x * x) + ((6 * (1 + (1 - x))) - (1 + -3)))
+Linear scaling: a = 0, b = 1
+Best expression (a + b * tree, simplified): x**2 - 6*x + 14
+Run time: 918.3 s
+
+-----data/dataset1.csv summary (10 runs)-----
+Run times (s): [799.1, 1050.9, 683.3, 936.8, 914.5, 701.4, 840.1, 862.6, 987.0, 918.3]
+Average: 869.4 s
+Test MSEs: [0.197757, 2.789876, 0.00061, 1.931623, 0.00061, 0.00061, 0.00061, 0.00061, 0.999746, 0.00061]
+Best model (lowest test MSE): run 7, test MSE = 0.000610
+Best expression: x**2 - 6*x + 14
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 1/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (((x1 / x3) * x2) / x3)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 510.8 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 2/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 9 nodes
+Best expression (inorder): (((x1 / x3) * x2) * (7.892779681551318 / x3))
+Linear scaling: a = 0.14111191013262214, b = 8.450216921225033e-12
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132622
+Run time: 548.9 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 3/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (((x2 * x1) / x3) / x3)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 543.8 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 4/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): ((x1 / (x3 * x3)) * x2)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 555.0 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 5/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): ((x2 / x3) / (x3 / x1))
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 563.1 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 6/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (((x2 / x3) * x1) / x3)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 547.5 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 7/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (((x2 / x3) * x1) / x3)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 539.3 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 8/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (((x2 / x3) * x1) / x3)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 594.2 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 9/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (x2 / ((x3 * x3) / x1))
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 518.3 s
+
+data/dataset2.csv (80/20 split, linear scaling = True), run 10/10:
+excluded 1263 rows with x3 <= 0.5
+Train MSE: 85.779539
+Test MSE: 116.506833
+Test relative error (RMS %): 14.069%
+Tree size: 7 nodes
+Best expression (inorder): (((x2 / x3) * x1) / x3)
+Linear scaling: a = 0.14111191013267899, b = 6.669570042054607e-11
+Best expression (a + b * tree, simplified): 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Run time: 523.5 s
+
+-----data/dataset2.csv summary (10 runs)-----
+Run times (s): [510.8, 548.9, 543.8, 555.0, 563.1, 547.5, 539.3, 594.2, 518.3, 523.5]
+Average: 544.4 s
+Test MSEs: [116.506833, 116.506833, 116.506833, 116.506833, 116.506833, 116.506833, 116.506833, 116.506833, 116.506833, 116.506833]
+Best model (lowest test MSE): run 3, test MSE = 116.506833
+Best expression: 6.66957004205461e-11*x1*x2/x3**2 + 0.141111910132679
+Job finished: Tue Oct 20 05:21:15 EDT 2026
+Total run time: 03:55:39 (hh:mm:ss)

@@ -1,0 +1,207 @@
+Job started: Mon Oct 19 12:33:04 EDT 2026
+
+data/dataset1.csv (80/20 split), run 1/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 7 nodes
+Best expression (inorder): (x * ((2 + x) - 8))
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 415.2 s
+
+data/dataset1.csv (80/20 split), run 2/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): (x * (x + -6))
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 390.5 s
+
+data/dataset1.csv (80/20 split), run 3/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): ((6 - x) * x)
+Linear scaling: a = 14.00003657899174, b = -0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 406.4 s
+
+data/dataset1.csv (80/20 split), run 4/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 7 nodes
+Best expression (inorder): (((x / 6) + -1) * x)
+Linear scaling: a = 14.00003657899174, b = 5.9998832256998
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 432.8 s
+
+data/dataset1.csv (80/20 split), run 5/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): (x * (x + -6))
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 423.2 s
+
+data/dataset1.csv (80/20 split), run 6/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): (x * (6 - x))
+Linear scaling: a = 14.00003657899174, b = -0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 369.9 s
+
+data/dataset1.csv (80/20 split), run 7/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): ((x + -6) * x)
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 383.7 s
+
+data/dataset1.csv (80/20 split), run 8/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 7 nodes
+Best expression (inorder): ((x + -1) * (5 - x))
+Linear scaling: a = 9.000133890908572, b = -0.9999805376166333
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 443.7 s
+
+data/dataset1.csv (80/20 split), run 9/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): ((-6 + x) * x)
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 391.1 s
+
+data/dataset1.csv (80/20 split), run 10/10:
+Train MSE: 0.000591
+Test MSE: 0.000610
+Tree size: 5 nodes
+Best expression (inorder): (x * (-6 + x))
+Linear scaling: a = 14.00003657899174, b = 0.9999805376166334
+Best expression (a + b * tree, simplified): 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+Run time: 406.9 s
+
+-----data/dataset1.csv summary (10 runs)-----
+Run times (s): [415.2, 390.5, 406.4, 432.8, 423.2, 369.9, 383.7, 443.7, 391.1, 406.9]
+Average: 406.3 s
+Test MSEs: [0.00061, 0.00061, 0.00061, 0.00061, 0.00061, 0.00061, 0.00061, 0.00061, 0.00061, 0.00061]
+Best model (lowest test MSE): run 4, test MSE = 0.000610
+Best expression: 0.999980537616633*x**2 - 5.9998832256998*x + 14.0000365789917
+
+data/dataset2.csv (80/20 split), run 1/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 7 nodes
+Best expression (inorder): (((x2 / x3) * x1) / x3)
+Linear scaling: a = 272.42072851496687, b = 6.262906360953782e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 508.8 s
+
+data/dataset2.csv (80/20 split), run 2/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 7 nodes
+Best expression (inorder): (x2 / (x3 / (x1 / x3)))
+Linear scaling: a = 272.42072851496687, b = 6.262906360953782e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 461.5 s
+
+data/dataset2.csv (80/20 split), run 3/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089075
+Tree size: 7 nodes
+Best expression (inorder): (x1 * ((x2 / x3) / x3))
+Linear scaling: a = 272.4207285149678, b = 6.26290636095378e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514968
+Run time: 464.1 s
+
+data/dataset2.csv (80/20 split), run 4/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 9 nodes
+Best expression (inorder): ((-4.092563774788884 / x3) * (x1 / (x3 / x2)))
+Linear scaling: a = 272.4207285149678, b = -1.530313687360157e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514968
+Run time: 511.3 s
+
+data/dataset2.csv (80/20 split), run 5/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 9 nodes
+Best expression (inorder): (x1 * ((1.8525513519617895 / (x3 / x2)) / x3))
+Linear scaling: a = 272.42072851496687, b = 3.380692445756807e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 464.6 s
+
+data/dataset2.csv (80/20 split), run 6/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 7 nodes
+Best expression (inorder): (((x1 * x2) / x3) / x3)
+Linear scaling: a = 272.42072851496687, b = 6.262906360953782e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 490.2 s
+
+data/dataset2.csv (80/20 split), run 7/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 7 nodes
+Best expression (inorder): ((x2 / x3) * (x1 / x3))
+Linear scaling: a = 272.4207285149678, b = 6.26290636095378e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514968
+Run time: 497.1 s
+
+data/dataset2.csv (80/20 split), run 8/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 7 nodes
+Best expression (inorder): ((x1 / x3) / (x3 / x2))
+Linear scaling: a = 272.42072851496687, b = 6.262906360953782e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 417.4 s
+
+data/dataset2.csv (80/20 split), run 9/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 7 nodes
+Best expression (inorder): (x1 / ((x3 / x2) * x3))
+Linear scaling: a = 272.42072851496687, b = 6.262906360953782e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 443.8 s
+
+data/dataset2.csv (80/20 split), run 10/10:
+excluded 68 rows with x3 <= 0.02
+Train MSE: 88412581.912776
+Test MSE: 285046334.089074
+Tree size: 11 nodes
+Best expression (inorder): ((((x1 / x3) * (x2 * x1)) / x1) / x3)
+Linear scaling: a = 272.42072851496687, b = 6.262906360953782e-11
+Best expression (a + b * tree, simplified): 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Run time: 623.7 s
+
+-----data/dataset2.csv summary (10 runs)-----
+Run times (s): [508.8, 461.5, 464.1, 511.3, 464.6, 490.2, 497.1, 417.4, 443.8, 623.7]
+Average: 488.3 s
+Test MSEs: [285046334.089074, 285046334.089074, 285046334.089075, 285046334.089074, 285046334.089074, 285046334.089074, 285046334.089074, 285046334.089074, 285046334.089074, 285046334.089074]
+Best model (lowest test MSE): run 6, test MSE = 285046334.089074
+Best expression: 6.26290636095378e-11*x1*x2/x3**2 + 272.420728514967
+Job finished: Mon Oct 19 15:02:10 EDT 2026
+Total run time: 02:29:06 (hh:mm:ss)
