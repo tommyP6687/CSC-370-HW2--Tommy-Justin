@@ -8,6 +8,23 @@ Contributors: Tommy Pham and Justin Caudle
 
 ## Files and Functions
 
+### Read_Data.py
+
+Reads the CSV files and separates the inputs and target outputs into lists.
+
+- read_data(file_name): Returns the lists (X, X1, X2, X3, Y). Input lists that do not apply to a dataset remain empty.
+
+### tree.py
+
+Defines expression trees and the operations used to evaluate and evolve them. 
+
+- TreeNode: Represents an operator, variable, or constant. Contains `is_leaf`
+- Tree: Stores an expression tree and its configuration.
+- 
+
+
+ 
+
 ### Supplementary Files 
 - `dataset1.csv` - 25,000 data points, one point per line, each line has an $x$ value and a corresponding mystery $f(x)$ value. Determine $f$ using symbolic regression. <br>
 $f$ *can be expressed by composing* $+, -, ×, ÷$*, and **integer** constants.* 
@@ -20,4 +37,4 @@ $f$ *can be expressed by composing* $+, -, ×, ÷$, ***integer** constants, and 
 
 ### Our Files
 
-## How to ... ?
+## How to collect data... ?
