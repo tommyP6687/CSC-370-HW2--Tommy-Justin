@@ -18,8 +18,8 @@ Reads the CSV files and separates the inputs and target outputs into lists.
 
 Defines expression trees and the operations used to evaluate and evolve them. 
 
-- TreeNode: Represents an operator, variable, or constant. Contains `is_leaf`
-- Tree: Stores an expression tree and its configuration.
+- Class TreeNode: Represents an operator, variable, or constant. Contains `is_leaf`
+- Class Tree: Stores an expression tree and its configuration. Contains `Mutate`, `collect_nodes`, `crossover`, `predict`, `fitness`, `inorder`, `compute_tree`, `to_sympy`, `tree_depth`, `tree_size`, `has_variable`, ` random_tree`, `random_node`, `random_constant`. 
 - 
 
 
